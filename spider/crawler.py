@@ -37,7 +37,7 @@ def getArchivesIDList(page):
 	dom = pq(url=url);
 	ArchivesIDList = [];
 	for a in dom.items('a'):
-		ArchivesIDList.push(int(a.attr('href').split('\'')[1]));
+		ArchivesIDList.append(int(a.attr('href').split('\'')[1]));
 	return ArchivesIDList;
 
 print(getArchivesIDList(1));
