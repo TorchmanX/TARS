@@ -17,7 +17,7 @@ def mergeArticleArff ():
 				continue
 			try:
 				l = l.split(',')
-				if(len(l) < 5):
+				if(len(l) < 5 || l[0].isnumeric() == False):
 					continue
 				if(l[0] in duplicate_id):
 					continue
