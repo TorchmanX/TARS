@@ -8,6 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 def mergeArticleArff ():
 	ArticleArffList = []
+	duplicate_id = []
 	for i in range(int(sys.argv[1]), int(sys.argv[2])) :
 		print('page '+str(i))
 		f = codecs.open('article_'+str(i)+'.arff', 'r', encoding='utf8')
@@ -18,6 +19,9 @@ def mergeArticleArff ():
 				l = l.split(',')
 				if(len(l) < 5):
 					continue
+				if(l[0] in duplicate_id):
+					continue
+				duplicate_id.append(l[0])
 				ArticleArffList.append('"'+('","').join(l[0:5])+'"\n')
 			except:
 				continue
