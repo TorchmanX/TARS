@@ -33,7 +33,7 @@ class Article:
 			self.freqsum += row[1]
 
 def getArchivesIDList(page):
-	url = 'http://1999.taipei.gov.tw/TCGGetSearch.ASPX?CategoryID=0&CategoryType=Key&KeyList=&PageNo='+page+'&SortOrder=CreateDate%20DESC,%20Subject&adv=N'
+	url = 'http://1999.taipei.gov.tw/TCGGetSearch.ASPX?CategoryID=0&CategoryType=Key&KeyList=&PageNo='+str(page)+'&SortOrder=CreateDate%20DESC,%20Subject&adv=N'
 	dom = pq(url=url);
 	ArchivesIDList = [];
 	for a in dom.items('a'):
