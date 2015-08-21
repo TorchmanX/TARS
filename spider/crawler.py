@@ -7,6 +7,11 @@ import unirest
 import re
 import arff
 #import urllib2
+# encoding=utf8  
+import sys  
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
 #article
 class Article:
@@ -39,20 +44,21 @@ def getArticle(ID):
 	a.Department = dom.find('#Label2').text()
 	a.ReadCount = int(dom.find('#Label4').text())
 	a.Title = dom.find('#Label5').text()
-	self.Content = dom.find('#Label6').text()
-	self.Glossary = dom.find('#Label7').text()
-
+	a.Content = dom.find('#Label6').text()
+	a.Glossary = dom.find('#Label7').text()
+	print(str(ID)+' Title: '+a.Title);
 	return a;
 
 def getArticleList():
 	ArticleList = []
-	for i in range(0, 5) :
+	for i in range(int(sys.argv[1]), int(sys.argv[2])) :
+		print('page '+str(i));
 		ArchivesIDList = getArchivesIDList(i)
 		for ID in ArchivesIDList:
 			a = getArticle(ID)
 			ArticleList.append(a.toList())
 
-	arff.dump(open('article.arff', 'w'), data, relation="article", names=['ArchivesID', 'Category', 'Department', 'ReadCount', 'Title', 'Content', 'Glossary'])
+		arff.dump('article_'+str(i)+'.arff', ArticleList, relation="article", names=['ArchivesID', 'Category', 'Department', 'ReadCount', 'Title', 'Content', 'Glossary'])
 
 
 getArticleList();

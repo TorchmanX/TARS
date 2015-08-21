@@ -8,7 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 def mergeArticleArff ():
 	ArticleArffList = []
-	for i in range(0, 4) :
+	for i in range(int(sys.argv[1]), int(sys.argv[2])) :
 		print('page '+str(i))
 		f = codecs.open('article_'+str(i)+'.arff', 'r', encoding='utf8')
 		for l in f:
@@ -25,7 +25,7 @@ def mergeArticleArff ():
 	#arff.dump('article_merged.arff', ArticleArffList, relation="article", names=['ArchivesID', 'Category', 'Department', 'ReadCount', 'Title'])
 	f = codecs.open('article_merged.arff', 'w', encoding='utf8')
 	f.writelines(['@relation article\n','@attribute ArchivesID string\n','@attribute Category string\n','@attribute Department string\n','@attribute ReadCount string\n','@attribute Title string\n','@data\n'])
-	print(ArticleArffList)
+	#print(ArticleArffList)
 	f.writelines(ArticleArffList)
 
 mergeArticleArff();
