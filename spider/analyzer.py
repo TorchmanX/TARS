@@ -43,10 +43,80 @@ def getKeywords ():
 		print(l[4])
 		print(tags)
 
-def testKeywords ():
+def getCategoryList ():
+	CategoryList = dict()
+	f = codecs.open('article_merged_2.arff', 'r', encoding='utf8')
+	for row in f:
+		if(row[0]=='@'): continue
+		c_list = row.split(',')[1].replace('"', '').split(';')
+		for c in c_list:
+			if(c != ''):
+				try:
+					CategoryList[c] = CategoryList[c] + 1
+				except:
+					CategoryList[c] = 1
 
-	tags = jieba.analyse.textrank("目前可收托12歲以下兒童4人。 依於衛生福利部103年9月15日以部授家字第1030900692號令訂定發布之「居家式托育服務提供者登記及管理辦法」規定，自103年12月1日起，收托人數說明如下： 1.每1托育人員照顧半日、日間、延長或臨時托育兒童至多4人，其中未滿2歲兒童至多2人。 2.每1托育人員照顧全日或夜間托育兒童至多2人。 3.每1托育人員照顧全日或夜間托育兒童1人者，得增加收托半日、日間、延長或臨時托育之兒童至多2人，其中未滿2歲兒童至多2人。 4.每1托育人員照顧夜間托育2歲以上兒童2人者，得增加收托半日、日間、延長或臨時托育之兒童至多1人。 5.2名以上托育人員於同一處所共同照顧兒童至多4人，其中全日或夜間托育兒童至多2人。 收托人數，應以托育人員托育服務時間實際照顧兒童數計算，並包括其六歲以下之子女、受其監護及三親等內兒童。 聯合收托育者，應就收托之兒童分配主要照顧人。,兒童托育,新生兒,兒童,保母,托育,QA", topK=5, withWeight=True, allowPOS=('ns', 'n', 'vn', 'v')) 
-	print(tags)
+	f = codecs.open('category.csv', 'w', encoding='utf8')
+	f.write('"category", "freq"\n')
+	for c, freq in CategoryList.items():
+		f.write('"'+c+'",'+str(freq)+'\n')
+	f.close()
+
+def analyzeKeywords():
+	
+	f = codecs.open('category.csv', 'r', encoding='utf8')
+	category_list = dict()
+	i=0
+	for l in f:
+		l = l.split(',')
+		if(l[0] == '"category"'):continue
+		c = l[0].replace('"', '')
+		if(c=="''" or c==""):
+			c = u"其他"
+		category_list[c] = i
+		i = i+1
+
+	start = int(sys.argv[1])
+	end = int(sys.argv[2])
+	f = codecs.open('article_v2_'+str(start)+'_'+str(end)+'.arff', 'r', encoding='utf8')
+	keyword_list = dict()
+
+	for l in f:
+		if(l[0] == '@'): continue
+
+		row = l.split(',')
+		print(row[4])
+
+		sentence = ','.join(row[4:6])
+		category = row[1].replace('"', '').split(';')
+		keywords = jieba.analyse.textrank(sentence, topK=5, withWeight=True, allowPOS=('ns', 'n', 'vn', 'v'))
+		print(keywords)
+		for k in keywords:
+			for c in category:
+				if(c==""):
+					c = u"其他"
+				if(c not in category_list):
+					continue
+				try:
+					keyword_list[k[0]][category_list[c]] += k[1]
+				except:
+					keyword_list[k[0]] = dict()
+					keyword_list[k[0]][category_list[c]] = k[1]
+
+		f = codecs.open('keyword_list_'+str(start)+'_'+str(end)+'.csv', 'w', encoding='utf8')
+		f.write('"category","'+'","'.join(category_list)+'"\n')
+
+		for key, arr in keyword_list.items():
+			row = [key]
+			for i in range(0, len(category_list)):
+				try:
+					row.append(str(arr[i]))
+				except:
+					row.append("0")
+
+			f.write('"'+'","'.join(row)+'"\n')
+		f.close()
+
 
 def superMerger ():
 	ArticleArffList = []
@@ -94,5 +164,5 @@ def superMerger ():
 	#print(ArticleArffList)
 	f.writelines(ArticleArffList)
 
-superMerger();
+analyzeKeywords();
 
