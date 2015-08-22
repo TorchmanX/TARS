@@ -13,6 +13,7 @@ def mergeKeywordList ():
 	keyword_list = dict()
 	header = ''
 	for i in range(0, 8):
+		print(str(i*1000))
 		f = codecs.open('keyword_list_'+str(i*1000)+'_'+str((i+1)*1000)+'.csv', 'r', encoding='utf8')
 		flag = True
 		for l in f:
@@ -36,12 +37,12 @@ def mergeKeywordList ():
 
 	f = codecs.open('keyword_list_merged.csv', 'w', encoding='utf8')
 	f.write(header+'\n')
-	for key, arr in keyword_list:
+	for key, arr in keyword_list.items():
 		f.write('"'+key+'",')
 		for j in range(1, len(l)):
-			if(j in arr):
+			try:
 				f.write(str(arr[j])+',')
-			else:
+			except:
 				f.write('0,')
 		f.write('\n')
 	f.close()
