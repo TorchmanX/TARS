@@ -61,7 +61,7 @@ def superMerger ():
 
 	for i in range(int(sys.argv[1]), int(sys.argv[2])) :
 		print('page '+str(i))
-		f = codecs.open('archive/article_'+str(i)+'.arff', 'r', encoding='utf8')
+		f = codecs.open('article_'+str(i)+'.arff', 'r', encoding='utf8')
 		for l in f:
 			if (l[0] == '@'): 
 				continue
@@ -73,7 +73,7 @@ def superMerger ():
 
 			if(collect):
 				if(ID != 0):
-					ArticleArffList.append([ID, Category, Department, ReadCount, Title, Content])
+					ArticleArffList.append('"'+ID+'", "'+Category+'", "'+Department+'", "'+ReadCount+'", "'+Title+'", "'+Content+'"\n')
 					duplicate_id.append(ID)
 				l = l.replace(' ', '').replace('"', '').replace('\n', '')
 				l = l.split(',');
