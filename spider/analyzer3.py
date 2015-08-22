@@ -12,13 +12,14 @@ sys.setdefaultencoding('utf8')
 def mergeKeywordList ():
 	keyword_list = dict()
 	header = ''
-	flag = True
 	for i in range(0, 8):
 		f = codecs.open('keyword_list_'+str(i*1000)+'_'+str((i+1)*1000)+'.csv', 'r', encoding='utf8')
+		flag = True
 		for l in f:
 			if(flag):
 				flag = False
-				header = l
+				if(header == ''):
+					header = l
 				continue
 
 			l = l.replace('"', '').split(',')
