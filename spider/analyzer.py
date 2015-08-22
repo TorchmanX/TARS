@@ -62,6 +62,24 @@ def getCategoryList ():
 		f.write('"'+c+'",'+str(freq)+'\n')
 	f.close()
 
+def getDepList():
+	DepList = dict()
+	f = codecs.open('article_merged_2.arff', 'r', encoding='utf8')
+	for row in f:
+		if(row[0]=='@'): continue
+		c = row.split(',')[2].replace('"', '')
+		if(c != ''):
+			try:
+				DepList[c] = DepList[c] + 1
+			except:
+				DepList[c] = 1
+
+	f = codecs.open('dep_list.csv', 'w', encoding='utf8')
+	f.write('"dep", "freq"\n')
+	for c, freq in DepList.items():
+		f.write('"'+c+'",'+str(freq)+'\n')
+	f.close()
+
 def analyzeKeywords():
 	
 	f = codecs.open('category.csv', 'r', encoding='utf8')
