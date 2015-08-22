@@ -11,3 +11,9 @@ def sendQuestion(request):
 	data['Deps'] = cooper.getDepsbyCategory(data['Category'])
 
 	return HttpResponse(json.dumps(data), content_type="application/json")
+
+def test(request):
+	return HttpResponse('<form method="POST" action="/api/sendQuestion"><input type="text" name="question"></input><input type="submit"></input></form>')
+
+	#return
+
