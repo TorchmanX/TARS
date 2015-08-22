@@ -48,6 +48,8 @@ def getDepsbyCategory(cate_id):
 	attr_flag = True
 	dep_list = dict()
 	index = int(cate_id)+1
+	if(index == 0):
+		return []
 	f = codecs.open('data/dep_cate_list.csv', 'r', encoding='utf8')
 	for l in f:
 		if(attr_flag):
