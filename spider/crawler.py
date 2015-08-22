@@ -27,7 +27,7 @@ class Article:
 		self.Glossary = None
 
 	def toList(self):
-		return ['"'+self.ArchivesID+'"', '"'+self.Category+'"', '"'+self.Department+'"', '"'+self.ReadCount+'"', '"'+self.Title+'"', '"'+self.Content+'"', '"'+self.Glossary+'"']
+		return [self.ArchivesID, '"'+self.Category+'"', '"'+self.Department+'"', self.ReadCount, '"'+self.Title+'"', '"'+self.Content+'"', '"'+self.Glossary+'"']
 
 def getArchivesIDList(page):
 	url = 'http://1999.taipei.gov.tw/TCGGetSearch.ASPX?CategoryID=0&CategoryType=Key&KeyList=&PageNo='+str(page)+'&SortOrder=CreateDate%20DESC,%20Subject&adv=N'
@@ -45,28 +45,35 @@ def getArchivesIDListFromARFF():
 	ArticleList = []
 	for index, l in enumerate(f):
 		if(l[0] == '@'):
-			span++
+			span = span + 1
 			continue
-		if(index >= start + span && index < end + span):
+		elif(index >= start + span and index < end + span):
 			l = l.split(',')
-			ID = l.replace('"')
+			ID = l[0].replace('"', '')
 			a = getArticle(ID)
+			if(a == False):
+				continue
 			ArticleList.append(a.toList())
+		else:
+			continue
 	arff.dump('article_v2_'+str(start)+'_'+str(end)+'.arff', ArticleList, relation="article", names=['ArchivesID', 'Category', 'Department', 'ReadCount', 'Title', 'Content', 'Glossary'])
 
 def getArticle(ID):
-	url = 'http://1999.taipei.gov.tw/TCGGetFAQ.ASPX?ArchivesID='+str(ID)
-	dom = pq(url=url)
-	a = Article()
-	a.ArchivesID = int(ID)
-	a.Category = dom.find('#Label1').text()
-	a.Department = dom.find('#Label2').text()
-	a.ReadCount = int(dom.find('#Label4').text())
-	a.Title = dom.find('#Label5').text()
-	a.Content = re.escape(dom.find('#Label6').text())
-	a.Glossary = re.escape(dom.find('#Label7').text())
-	print(str(ID)+' Title: '+a.Title);
-	return a;
+	try:
+		url = 'http://1999.taipei.gov.tw/TCGGetFAQ.ASPX?ArchivesID='+str(ID)
+		dom = pq(url=url)
+		a = Article()
+		a.ArchivesID = int(ID)
+		a.Category = dom.find('#Label1').text()
+		a.Department = dom.find('#Label2').text()
+		a.ReadCount = int(dom.find('#Label4').text())
+		a.Title = dom.find('#Label5').text()
+		a.Content = re.sub(r'[ 　\t\r\n\"]', '',dom.find('#Label6').text())
+		a.Glossary = re.sub(r'[ 　\t\r\n\"]', '',dom.find('#Label7').text())
+		print(str(ID)+' Title: '+a.Title);
+		return a;
+	except:
+		return False
 
 def getArticleList():
 	ArticleList = []
