@@ -1,6 +1,7 @@
 # encoding=utf8  
 import jieba.posseg as pseg
 import codecs
+import operator
 import sys
 
 reload(sys)  
@@ -46,20 +47,24 @@ def getCategory(sentence):
 def getDepsbyCategory(cate_id):
 	attr_flag = True
 	dep_list = dict()
-	outcome = []
+	index = int(cate_id)+1
 	f = codecs.open('data/dep_cate_list.csv', 'r', encoding='utf8')
 	for l in f:
-		if(attr_flag):continue
+		if(attr_flag):
+			attr_flag = False
+			continue
 
 		l = l.replace('"', '').split(',')
 
-		if(l[cate_id+1] > 0):
-			dep_list[l[cate_id+1]] = l[0]
+		if(int(l[index]) > 0):
+			dep_list[l[0]] = int(l[index])
 
-	keylist = dep_list.keys()
-	keylist.sort(reverse=True)
+	sorted_outcome = sorted(dep_list.items(), key=operator.itemgetter(1), reverse=True)
+
+	#keylist = dep_list.keys()
+	#keylist.sort(reverse=True)
 	'''
 	for key in keylist:
 		outcome.append(dep_list[key])
 	'''
-	return keylist
+	return sorted_outcome
