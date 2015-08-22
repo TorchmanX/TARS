@@ -34,15 +34,17 @@ def getCategory(sentence):
 			else:
 				for i in range(0, len(category_list)):
 					category_list[i] = float(l[i+1]) + float(category_list[i])
-
+	'''
 	outcome = -1
 	val = 0
 	for i in range(0, len(category_list)):
 		if(category_list[i] > val):
 			outcome = i
 			val = category_list[i]
-	print(keyword_list)
-	return outcome
+	'''
+	sorted_outcome = sorted(category_list.items(), key=operator.itemgetter(1), reverse=True)
+	print(sorted_outcome[0:5])
+	return sorted_outcome[0:5]
 
 def getDepsbyCategory(cate_id):
 	attr_flag = True
