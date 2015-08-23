@@ -11,14 +11,14 @@ def getCategory(sentence):
 	print(sentence)
 	seg_list = pseg.cut(sentence)
 	keyword_list = []
-	category_list = []
+	category_list = {}
 	ref_keyword_list = []
 	pos_list = ['ns', 'n', 'vn', 'v']
 	for word, tag in seg_list:
 		if(tag in pos_list):
 			keyword_list.append(word)
 
-	f = codecs.open('data/keyword_list_0_1000.csv', 'r', encoding='utf8')
+	f = codecs.open('data/keyword_list_merged.csv', 'r', encoding='utf8')
 	attr_flag = True
 	for l in f:
 		if(attr_flag):
@@ -28,9 +28,9 @@ def getCategory(sentence):
 		l = l.replace('"', '').split(',')
 		if( l[0] in keyword_list):
 			print(l[0])
-			if(category_list == []):
-				for i in range(1, len(l)):
-					category_list.append(float(l[i]))
+			if(category_list == {}):
+				for i in range(1, len(l)-1):
+					category_list[i-1] = (float(l[i]))
 			else:
 				for i in range(0, len(category_list)):
 					category_list[i] = float(l[i+1]) + float(category_list[i])
@@ -41,10 +41,21 @@ def getCategory(sentence):
 		if(category_list[i] > val):
 			outcome = i
 			val = category_list[i]
+	
+	outcome = []
+	for i in range(0, 5):
+		greater = 0
+		greater_id = 0
+		for j in range(0, len(category_list)):
+			if category_list[j] > greater:
+				greater = category_list[j]
+				greater_id = j
+		outcome.append(greater_id)
+		category_list[greater_id] = 0
 	'''
 	sorted_outcome = sorted(category_list.items(), key=operator.itemgetter(1), reverse=True)
-	print(sorted_outcome[0:5])
-	return sorted_outcome[0:5]
+	print(sorted_outcome[0:3])
+	return sorted_outcome[0:3]
 
 def getDepsbyCategory(cate_id):
 	attr_flag = True
@@ -53,6 +64,7 @@ def getDepsbyCategory(cate_id):
 	if(index == 0):
 		return []
 	f = codecs.open('data/dep_cate_list.csv', 'r', encoding='utf8')
+	i = 1
 	for l in f:
 		if(attr_flag):
 			attr_flag = False
@@ -61,7 +73,8 @@ def getDepsbyCategory(cate_id):
 		l = l.replace('"', '').split(',')
 
 		if(int(l[index]) > 0):
-			dep_list[l[0]] = int(l[index])
+			dep_list[str(i)] = int(l[index])
+		i += 1
 
 	sorted_outcome = sorted(dep_list.items(), key=operator.itemgetter(1), reverse=True)
 
