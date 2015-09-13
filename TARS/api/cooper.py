@@ -28,6 +28,7 @@ def getCategory(sentence):
 		l = l.replace('"', '').split(',')
 		if( l[0] in keyword_list):
 			print(l[0])
+			ref_keyword_list.append(l[0])
 			if(category_list == {}):
 				for i in range(1, len(l)-1):
 					category_list[i-1] = (float(l[i]))
@@ -54,10 +55,13 @@ def getCategory(sentence):
 		category_list[greater_id] = 0
 	'''
 	sorted_outcome = sorted(category_list.items(), key=operator.itemgetter(1), reverse=True)
-	print(sorted_outcome[0:3])
-	return sorted_outcome[0:3]
+	print(sorted_outcome[0:5])
+	outcome = {}
+	outcome['category'] = sorted_outcome[0:5]
+	outcome['keyword'] = ref_keyword_list
+	return outcome
 
-def getDepsbyCategory(cate_id):
+def getDepsbyCategory(cate_id, weight):
 	attr_flag = True
 	dep_list = dict()
 	index = int(cate_id)+1
@@ -73,7 +77,7 @@ def getDepsbyCategory(cate_id):
 		l = l.replace('"', '').split(',')
 
 		if(int(l[index]) > 0):
-			dep_list[str(i)] = int(l[index])
+			dep_list[str(i)] = int(l[index]) * weight
 		i += 1
 
 	sorted_outcome = sorted(dep_list.items(), key=operator.itemgetter(1), reverse=True)
