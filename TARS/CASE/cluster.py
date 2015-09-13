@@ -3,20 +3,22 @@ from scipy.cluster.vq import vq, kmeans2, whiten
 import json
 import math
 import operator
+from sklearn.tree import DecisionTreeRegressor
+import sys
 
+def doKMeans(filename):
 
-def doKMeans():
-
-	with open('data/user.json') as data_file:    
+	with open(filename) as data_file:    
 		data = json.load(data_file)
 
 	vertex_matrix = []
-
+	UID = []
 	for user in data["USERS"]:
 		arr = []
 		for VID, V_ANS in user["V_ANS"]["iphone6s"].items():
 			arr.append(V_ANS)
 		vertex_matrix.append(arr)
+		UID.append(user["UID"])
 		#print(arr)
 
 	if(len(vertex_matrix)==1):
@@ -114,12 +116,16 @@ def doKMeans():
 	planetList = []
 	for i in range(0, len(cluster[0])):
 		planetList.append({"users":[]})
-		for j in range(0, len(cluster[1])):
-			planetList[i]["users"].append({"userId": "u"+str(j+10)})
-
 		planetList[i]["vertex_weight"] = []
 		for v in final_vertex:
 			planetList[i]["vertex_weight"].append(centroid[i][v])
+	
+
+	for i in range(0, len(cluster[1])):
+		planetList[cluster[1][i]]["users"].append({"userId": UID[i]})
+		#planetList[i]["users"].append({"userId": UID[cluster[1][j]]})
+
+	
 
 	print(planetList)
 	
@@ -133,9 +139,42 @@ def doKMeans():
 	}
 
 	print(json.dumps(result))
+
+	saveJson = {"userData":[], "userCluster":[]}
+	for i in range(0, len(cluster[1])):
+		arr = []
+		#arr.append(UID[j])
+		for j in range(0, len(vertex_matrix[i])):
+			arr.append(vertex_matrix[i][j])
+		#arr.append(cluster[1][i])
+		saveJson["userData"].append(arr)
+		saveJson["userCluster"].append(cluster[1][i])
+
+	with open('../data/userCluster.json', 'w') as data_file:    
+		data_file.write(json.dumps(saveJson))
+
 	return result	
 
+def doClassifier():
+	with open('../data/userCluster.json') as data_file:    
+		data = json.load(data_file)
 
+	regressor = DecisionTreeRegressor()
+	new_user = [1, 1, 0, 1, 0, 2, 3, 3, 2, 2, 1]
 
+	regressor.fit(data["userData"], data["userCluster"])
 
-#doKMeans()
+	print(regressor.predict(new_user))
+
+if(len(sys.argv) == 3):
+	if(sys.argv[1] == 'local'):
+		if(sys.argv[2] == 'cluster'):
+			doKMeans('../data/user.json')
+		elif(sys.argv[2] == 'classifier'):
+			doClassifier()
+	elif(sys.argv[1] == 'server'):
+		if(sys.argv[2] == 'cluster'):
+			doKMeans('data/user.json')
+		elif(sys.argv[2] == 'classifier'):
+			doClassifier()
+
