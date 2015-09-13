@@ -4,7 +4,8 @@ import json
 from django.http import HttpResponse
 
 def sendQuestion(request):
+	#print(request)
 	data = {}
-	data['sphereList'] = cluster.doKMeans()
+	data['sphereList'] = cluster.doKMeans(request.POST['data'])
 
 	return HttpResponse(json.dumps(data), content_type="application/json")

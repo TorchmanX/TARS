@@ -7,12 +7,15 @@ from sklearn.tree import DecisionTreeRegressor
 import sys
 
 def doKMeans(filename):
-
+	'''
 	with open(filename) as data_file:    
 		data = json.load(data_file)
-
+	'''
+	#data = json.load(filename)
+	data = filename
 	vertex_matrix = []
 	UID = []
+	print(data)
 	for user in data["USERS"]:
 		arr = []
 		for VID, V_ANS in user["V_ANS"]["iphone6s"].items():
