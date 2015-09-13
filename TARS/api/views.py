@@ -8,11 +8,13 @@ from django.http import HttpResponse
 
 def sendQuestion(request):
 	data = {}
-	cate = cooper.getCategory(request.POST['question'])
+	outcome = cooper.getCategory(request.POST['question'])
+	data['Keyword'] = outcome['keyword']
+	cate = outcome['category']
 	tmp = []
 	data['Category'] = []
 	for c in cate:
-		tmp += cooper.getDepsbyCategory(c[0])
+		tmp += cooper.getDepsbyCategory(c[0], c[1])
 		data['Category'].append(c[0]+1)
 	tmp2 = {}
 	for d in tmp:
