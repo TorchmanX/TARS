@@ -25,7 +25,7 @@ def doKMeans():
 
 	whitened = whiten(vertex_matrix)
 	k = math.floor(math.sqrt(len(vertex_matrix)/2))
-	cluster = kmeans2(whitened,k, 99)
+	cluster = kmeans2(whitened,k, 99, 'points')
 
 	print cluster
 
@@ -131,7 +131,7 @@ def doKMeans():
 	}
 
 	print(json.dumps(result))
-	
+	return result	
 
 
 
