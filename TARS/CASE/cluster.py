@@ -121,8 +121,9 @@ def doKMeans(filename):
 
 	planetList = []
 	for i in range(0, len(cluster[0])):
-		planetList.append({"users":[]})
+		planetList.append({"children":[]})
 		planetList[i]["vertex_weight"] = []
+		planetList[i]["name"] = ""
 		for v in final_vertex:
 			if(math.isnan(centroid[i][v])):
 				centroid[i][v] = -1
@@ -130,7 +131,7 @@ def doKMeans(filename):
 	
 
 	for i in range(0, len(cluster[1])):
-		planetList[cluster[1][i]]["users"].append({"userId": UID[i]})
+		planetList[cluster[1][i]]["children"].append({"name": UID[i]})
 		#planetList[i]["users"].append({"userId": UID[cluster[1][j]]})
 
 	
@@ -139,11 +140,10 @@ def doKMeans(filename):
 	
 	
 	result={
-		"sphereList":[{
-			"vertex": final_vertex,
-			"vertex_weight": sphere_vertex_weight,
-			"planetList": planetList
-		}]
+		"name":"sphereList",
+		"vertex": final_vertex,
+		"vertex_weight": sphere_vertex_weight,
+		"children": planetList
 	}
 
 	print(json.dumps(result))
