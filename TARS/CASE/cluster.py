@@ -11,8 +11,10 @@ def doKMeans(filename):
 	with open(filename) as data_file:    
 		data = json.load(data_file)
 	'''
-	#data = json.load(filename)
-	data = filename
+	data = json.loads(filename)
+	#print(data["USERS"])
+	#data = filename
+	#print(data["USERS"])
 	vertex_matrix = []
 	UID = []
 	print(data)
@@ -29,7 +31,7 @@ def doKMeans(filename):
 	print(vertex_matrix)
 
 	whitened = whiten(vertex_matrix)
-	k = math.floor(math.sqrt(len(vertex_matrix)/2))
+	k = math.floor(math.sqrt(len(vertex_matrix)))
 	cluster = kmeans2(whitened,k, 99, 'points')
 
 	print cluster
@@ -112,7 +114,8 @@ def doKMeans(filename):
 	total_weight = sum(sphere_vertex_weight)
 	for i in range(0, len(sphere_vertex_weight)):
 		sphere_vertex_weight[i] = sphere_vertex_weight[i] / total_weight
-
+		if(math.isnan(sphere_vertex_weight[i])):
+			sphere_vertex_weight[i] = -1
 
 	print(sphere_vertex_weight)
 
@@ -121,6 +124,8 @@ def doKMeans(filename):
 		planetList.append({"users":[]})
 		planetList[i]["vertex_weight"] = []
 		for v in final_vertex:
+			if(math.isnan(centroid[i][v])):
+				centroid[i][v] = -1
 			planetList[i]["vertex_weight"].append(centroid[i][v])
 	
 
@@ -153,13 +158,13 @@ def doKMeans(filename):
 		saveJson["userData"].append(arr)
 		saveJson["userCluster"].append(cluster[1][i])
 
-	with open('../data/userCluster.json', 'w') as data_file:    
+	with open('data/userCluster.json', 'w') as data_file:    
 		data_file.write(json.dumps(saveJson))
 
 	return result	
 
 def doClassifier():
-	with open('../data/userCluster.json') as data_file:    
+	with open('data/userCluster.json') as data_file:    
 		data = json.load(data_file)
 
 	regressor = DecisionTreeRegressor()
