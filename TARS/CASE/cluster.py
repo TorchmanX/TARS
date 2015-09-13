@@ -136,4 +136,4 @@ def doKMeans():
 
 
 
-doKMeans()
+#doKMeans()
