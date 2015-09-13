@@ -114,6 +114,9 @@ def doKMeans(filename):
 	total_weight = sum(sphere_vertex_weight)
 	for i in range(0, len(sphere_vertex_weight)):
 		sphere_vertex_weight[i] = sphere_vertex_weight[i] / total_weight
+		x = sphere_vertex_weight[i]
+		sphere_vertex_weight[i] = math.pow(math.sine(0.5*3.14*x),(2/3))
+
 		if(math.isnan(sphere_vertex_weight[i])):
 			sphere_vertex_weight[i] = -1
 
@@ -128,6 +131,11 @@ def doKMeans(filename):
 			if(math.isnan(centroid[i][v])):
 				centroid[i][v] = -1
 			planetList[i]["vertex_weight"].append(centroid[i][v])
+
+
+		for j in range(0,len(planetList[i]["vertex_weight"])):
+			x = planetList[i]["vertex_weight"][j]
+			planetList[i]["vertex_weight"][j] = math.pow(math.sine(0.5*3.14*x),(2/3))
 	
 
 	for i in range(0, len(cluster[1])):
