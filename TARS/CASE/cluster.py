@@ -80,6 +80,8 @@ def doKMeans():
 	final_vertex = []
 	for i in range(0, len(circled_vertex[0])):
 		vote = dict()
+		for j in range(0, len(circled_vertex[0])):
+			vote[str(j+1)] = 0
 		for j in range(0, len(circled_vertex)):
 			try:
 				vote[circled_vertex[j][i]] += 1
@@ -136,4 +138,4 @@ def doKMeans():
 
 
 
-doKMeans()
+#doKMeans()
